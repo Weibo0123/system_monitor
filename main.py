@@ -18,9 +18,6 @@ def main():
     disk_usage = get_disk_usage()
     net_speed = get_net_speed()
 
-    
-
-
     if not any(args_dict.values()):
         print_all_usage_percentage(cpu_usage, mem_usage, disk_usage, net_speed)
     else:
@@ -39,13 +36,16 @@ def get_cpu_usage():
     usage = psutil.cpu_percent(interval=0.1)
     return usage
 
+
 def get_memory_usage():
     usage = psutil.virtual_memory()
     return usage
 
+
 def get_disk_usage():
     usage = psutil.disk_usage("/")
     return usage
+
 
 def get_net_speed(interval=1):
     old_value = psutil.net_io_counters()
@@ -66,8 +66,10 @@ def print_all_usage_percentage(cpu, mem, disk, net):
         print(f"Disk Usage: {disk.percent}%")
         print(f"Download Speed: {net[1] / (1024 ** 2):.2f} MB")
 
+
 def print_cpu_usage(cpu):
     print(f"CPU Usage: {cpu}%" )
+
 
 def print_memory_usage(mem):
     print(f"Memory Usage:")
@@ -76,6 +78,7 @@ def print_memory_usage(mem):
     print(f"Available: {mem.available/ (1024 ** 3):.2f} GB")
     print(f"Usage: {mem.percent}%")
 
+
 def print_disk_usage(disk):
     print(f"Disk Usage:")
     print(f"Total: {disk.total / (1024 ** 3):.2f} GB")
@@ -83,13 +86,13 @@ def print_disk_usage(disk):
     print(f"Free: {disk.free/ (1024 ** 3):.2f} GB")
     print(f"Usage: {disk.percent}%")
 
+
 def print_net_speed(net):
     print(f"Network Speed:")
     print(f"Upload Speed: {net[0] / (1024):.2f} KB/s")
     print(f"Download Speed: {net[1] / (1024):.2f} KB/s")
     print(f"Packets Upload: {int(net[2])} Packets/s")
     print(f"Packets Download: {int(net[3])} Packets/s")
-
 
 
 if __name__ == "__main__":
