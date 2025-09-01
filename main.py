@@ -47,7 +47,7 @@ def get_disk_usage():
     usage = psutil.disk_usage("/")
     return usage
 
-def get_net_speed(interval=0.1):
+def get_net_speed(interval=1):
     old_value = psutil.net_io_counters()
     time.sleep(interval)
     new_value = psutil.net_io_counters()
@@ -64,7 +64,7 @@ def print_all_usage_percentage(cpu, mem, disk, net):
         print(f"CPU Usage: {cpu}%" )
         print(f"Memory Usage: {mem.percent}%")
         print(f"Disk Usage: {disk.percent}%")
-        print(f"Network Speed: {net[1] / (1024 ** 2):.2f} MB")
+        print(f"Download Speed: {net[1] / (1024 ** 2):.2f} MB")
 
 def print_cpu_usage(cpu):
     print(f"CPU Usage: {cpu}%" )
@@ -85,10 +85,10 @@ def print_disk_usage(disk):
 
 def print_net_speed(net):
     print(f"Network Speed:")
-    print(f"Upload Speed: {net[0] / (1024 ** 2):.2f} MB")
-    print(f"Download Speed: {net[1] / (1024 ** 2):.2f} MB")
-    print(f"Packets Upload: {net[2] / (1024 ** 2):.2f} MB")
-    print(f"Packets Download: {net[3] / (1024 ** 2):.2f} MB")
+    print(f"Upload Speed: {net[0] / (1024):.2f} KB/s")
+    print(f"Download Speed: {net[1] / (1024):.2f} KB/s")
+    print(f"Packets Upload: {int(net[2])} Packets/s")
+    print(f"Packets Download: {int(net[3])} Packets/s")
 
 
 
