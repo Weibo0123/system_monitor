@@ -17,24 +17,15 @@ def main():
 
 
     if not any(args_dict.values()):
-        print(f"CPU Usage: {cpu_usage}%" )
-        print(f"Memory Usage: {mem_usage.percent}%")
-        print(f"Disk Usage: {disk_usage.percent}%")
+        print_all_usage_percentage(cpu_usage, mem_usage, disk_usage)
     else:
         if args.cpu:
-            print(f"CPU Usage: {cpu_usage}%" )
+            print_cpu_usage(cpu_usage)
         if args.mem:
-            print(f"Memory Usage:")
-            print(f"Total: {mem_usage.total / (1024 ** 3):.2f} GB")
-            print(f"Used: {mem_usage.used / (1024 ** 3):.2f} GB")
-            print(f"Available: {mem_usage.available/ (1024 ** 3):.2f} GB")
-            print(f"Usage: {mem_usage.percent}%")
+            print_memory_usage(mem_usage)
         if args.disk:
-            print(f"Disk Usage:")
-            print(f"Total: {disk_usage.total / (1024 ** 3):.2f} GB")
-            print(f"Used: {disk_usage.used / (1024 ** 3):.2f} GB")
-            print(f"Free: {disk_usage.free/ (1024 ** 3):.2f} GB")
-            print(f"Usage: {disk_usage.percent}%")
+            print_disk_usage(disk_usage)
+
         
 
 
@@ -49,6 +40,28 @@ def get_memory_usage():
 def get_disk_usage():
     usage = psutil.disk_usage("/")
     return usage
+
+def print_all_usage_percentage(cpu, mem, disk):
+        print(f"CPU Usage: {cpu}%" )
+        print(f"Memory Usage: {mem.percent}%")
+        print(f"Disk Usage: {disk.percent}%")
+
+def print_cpu_usage(cpu):
+    print(f"CPU Usage: {cpu}%" )
+
+def print_memory_usage(mem):
+    print(f"Memory Usage:")
+    print(f"Total: {mem.total / (1024 ** 3):.2f} GB")
+    print(f"Used: {mem.used / (1024 ** 3):.2f} GB")
+    print(f"Available: {mem.available/ (1024 ** 3):.2f} GB")
+    print(f"Usage: {mem.percent}%")
+
+def print_disk_usage(disk):
+    print(f"Disk Usage:")
+    print(f"Total: {disk.total / (1024 ** 3):.2f} GB")
+    print(f"Used: {disk.used / (1024 ** 3):.2f} GB")
+    print(f"Free: {disk.free/ (1024 ** 3):.2f} GB")
+    print(f"Usage: {disk.percent}%")
 
 if __name__ == "__main__":
     main()
