@@ -34,7 +34,7 @@ def main():
             print(f"Total: {disk_usage.total / (1024 ** 3):.2f} GB")
             print(f"Used: {disk_usage.used / (1024 ** 3):.2f} GB")
             print(f"Free: {disk_usage.free/ (1024 ** 3):.2f} GB")
-            print(f"Usage: {mem_usage.percent}%")
+            print(f"Usage: {disk_usage.percent}%")
         
 
 
