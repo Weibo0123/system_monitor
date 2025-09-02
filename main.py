@@ -14,15 +14,17 @@ def main():
     args_dict = vars(args)
 
     cpu_usage = get_cpu_usage()
+    each_core_of_cpu_usage = get_each_core_of_cpu_usage()
     mem_usage = get_memory_usage()
     disk_usage = get_disk_usage()
     net_speed = get_net_speed()
+
 
     if not any(args_dict.values()):
         print_all_usage_percentage(cpu_usage, mem_usage, disk_usage, net_speed)
     else:
         if args.cpu:
-            print_cpu_usage(cpu_usage)
+            print_cpu_usage(cpu_usage, each_core_of_cpu_usage)
         if args.mem:
             print_memory_usage(mem_usage)
         if args.disk:
@@ -34,6 +36,11 @@ def main():
 
 def get_cpu_usage():
     usage = psutil.cpu_percent(interval=0.1)
+    return usage
+
+
+def get_each_core_of_cpu_usage():
+    usage = psutil.cpu_percent(interval=0.1, percpu=True)
     return usage
 
 
@@ -67,8 +74,10 @@ def print_all_usage_percentage(cpu, mem, disk, net):
         print(f"Download Speed: {net[1] / (1024 ** 2):.2f} MB")
 
 
-def print_cpu_usage(cpu):
-    print(f"CPU Usage: {cpu}%" )
+def print_cpu_usage(usage, cores):
+    print(f"CPU Usage: {usage}%")
+    for i, usage in enumerate(cores):
+        print(f"CPU Core {i}: {usage}%")
 
 
 def print_memory_usage(mem):
