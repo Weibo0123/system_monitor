@@ -8,15 +8,25 @@ def main():
     parser.add_argument("-m", "--mem", action="store_true", help="check the Memory")
     parser.add_argument("-d", "--disk", action="store_true", help="check the Disk")
     parser.add_argument("-n", "--net", action="store_true", help="check the Network")
-    parser.add_argument("-a", "--daemon", action="store_true", help="run in daemon mode(every 60s)")
+    parser.add_argument("-a", "--daemon", action="store_true", help="run in daemon mode(every 30s)")
 
 
     args = parser.parse_args()
 
     if args.daemon:
-        while True:
-            collect_args_and_print(args)
-            time.sleep(5)
+        print("Daemon mode enabled")
+        time.sleep(1)
+        print("Collecting system information every 30 seconds.")
+        time.sleep(1)
+        print("Press Ctrl + C to exit")
+        print("")
+        try:
+            while True:
+                collect_args_and_print(args)
+                time.sleep(30)
+        except KeyboardInterrupt:
+            print("\n Daemon mode exited.")
+            print("Thank you for using System Monitor. Goodbye!")
     else:
         collect_args_and_print(args)
         
@@ -56,11 +66,11 @@ def get_net_speed(interval=1):
 
 
 def print_all_usage_percentage(cpu, mem, disk, net):
-        print(f"CPU Usage: {cpu}%" )
-        print(f"Memory Usage: {mem.percent}%")
-        print(f"Disk Usage: {disk.percent}%")
-        print(f"Download Speed: {net[1] / (1024 ** 2):.2f} MB")
-        print("")
+    print(f"CPU Usage: {cpu}%" )
+    print(f"Memory Usage: {mem.percent}%")
+    print(f"Disk Usage: {disk.percent}%")
+    print(f"Download Speed: {net[1] / (1024 ** 2):.2f} MB")
+    print("")
 
 
 def print_cpu_usage(usage, cores):
@@ -107,7 +117,7 @@ def collect_args_and_print(args):
     disk_usage = get_disk_usage()
     net_speed = get_net_speed()
     if not any(args_dict.values()):
-            print_all_usage_percentage(cpu_usage, mem_usage, disk_usage, net_speed)
+        print_all_usage_percentage(cpu_usage, mem_usage, disk_usage, net_speed)
     else:
         if args.cpu:
             print_cpu_usage(cpu_usage, each_core_of_cpu_usage)
