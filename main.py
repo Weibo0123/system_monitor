@@ -18,14 +18,13 @@ def main():
         time.sleep(1)
         print("Collecting system information every 30 seconds.")
         time.sleep(1)
-        print("Press Ctrl + C to exit")
-        print("")
+        print("Press Ctrl + C to exit\nf")
         try:
             while True:
                 collect_args_and_print(args)
                 time.sleep(30)
         except KeyboardInterrupt:
-            print("\n Daemon mode exited.")
+            print("\n\n Daemon mode exited.")
             print("Thank you for using System Monitor. Goodbye!")
     else:
         collect_args_and_print(args)
@@ -69,15 +68,13 @@ def print_all_usage_percentage(cpu, mem, disk, net):
     print(f"CPU Usage: {cpu}%" )
     print(f"Memory Usage: {mem.percent}%")
     print(f"Disk Usage: {disk.percent}%")
-    print(f"Download Speed: {net[1] / (1024 ** 2):.2f} MB")
-    print("")
+    print(f"Download Speed: {net[1] / (1024 ** 2):.2f} MB\n")
 
 
 def print_cpu_usage(usage, cores):
     print(f"CPU Usage: {usage}%")
     for i, usage in enumerate(cores):
-        print(f"CPU Core {i}: {usage}%")
-    print("")
+        print(f"CPU Core {i+1}: {usage}%\n")
 
 
 def print_memory_usage(mem):
@@ -85,8 +82,7 @@ def print_memory_usage(mem):
     print(f"Total: {mem.total / (1024 ** 3):.2f} GB")
     print(f"Used: {mem.used / (1024 ** 3):.2f} GB")
     print(f"Available: {mem.available/ (1024 ** 3):.2f} GB")
-    print(f"Usage: {mem.percent}%")
-    print("")
+    print(f"Usage: {mem.percent}%\n")
 
 
 def print_disk_usage(disk):
@@ -94,8 +90,7 @@ def print_disk_usage(disk):
     print(f"Total: {disk.total / (1024 ** 3):.2f} GB")
     print(f"Used: {disk.used / (1024 ** 3):.2f} GB")
     print(f"Free: {disk.free/ (1024 ** 3):.2f} GB")
-    print(f"Usage: {disk.percent}%")
-    print("")
+    print(f"Usage: {disk.percent}%\n")
 
 
 def print_net_speed(net):
@@ -103,8 +98,7 @@ def print_net_speed(net):
     print(f"Upload Speed: {net[0] / (1024):.2f} KB/s")
     print(f"Download Speed: {net[1] / (1024):.2f} KB/s")
     print(f"Packets Upload: {int(net[2])} Packets/s")
-    print(f"Packets Download: {int(net[3])} Packets/s")
-    print("")
+    print(f"Packets Download: {int(net[3])} Packets/s\n")
 
 
 def collect_args_and_print(args):
@@ -128,6 +122,17 @@ def collect_args_and_print(args):
         if args.net:
             print_net_speed(net_speed)
     
+    check_and_warning(cpu_usage, mem_usage, disk_usage)
+    
+def check_and_warning(cpu, mem, disk):
+    RED = "\033[91m"
+    RESET = "\033[0m"
+    if cpu > 80:
+        print(f"{RED}[WANRING] High CPU Usage Detcted: {cpu}%{RESET}")
+    if mem.percent > 80:
+        print(f"{RED}[WANRING] High Memory Usage Detcted: {mem}{RESET}%")
+    if disk.percent > 80:
+        print(f"{RED}[WANRING] High Disk Usage Detcted: {disk}{RESET}%")
 
 if __name__ == "__main__":
     main()
