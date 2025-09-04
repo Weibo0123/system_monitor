@@ -128,11 +128,11 @@ def check_and_warning(cpu, mem, disk):
     RED = "\033[91m"
     RESET = "\033[0m"
     if cpu > 80:
-        print(f"{RED}[WANRING] High CPU Usage Detcted: {cpu}%{RESET}")
+        print(f"{RED}[WARNING] High CPU Usage Detected: {cpu}%{RESET}")
     if mem.percent > 80:
-        print(f"{RED}[WANRING] High Memory Usage Detcted: {mem}{RESET}%")
+        print(f"{RED}[WARnING] High Memory Usage Detected: {mem.percent}{RESET}%")
     if disk.percent > 80:
-        print(f"{RED}[WANRING] High Disk Usage Detcted: {disk}{RESET}%")
+        print(f"{RED}[WARNING] High Disk Usage Detected: {disk.percent}{RESET}%")
 
 if __name__ == "__main__":
     main()
