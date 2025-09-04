@@ -124,15 +124,50 @@ def collect_args_and_print(args):
     
     check_and_warning(cpu_usage, mem_usage, disk_usage)
     
+
 def check_and_warning(cpu, mem, disk):
+    warning_thresholds, danger_thresholds = get_thresholds()
+    get_warning(cpu, mem, disk, warning_thresholds, danger_thresholds)
+    
+
+def get_thresholds(warning_thresholds=None, danger_thresholds=None):
+    if not warning_thresholds:
+        warning_thresholds = 70
+    if not danger_thresholds:
+        danger_thresholds = 90 
+    return warning_thresholds, danger_thresholds
+
+
+def get_warning(cpu, mem, disk, warning_thresholds, danger_thresholds):
+    if cpu > warning_thresholds:
+        print_warning(f"[WARNING] High CPU Usage Detected: {cpu}%")
+    elif cpu > danger_thresholds:
+        print_danger(f"[DANGER] Danger CPU Usage Detected: {cpu}%")
+
+    if mem.percent > warning_thresholds:
+        print_warning(f"[WARNING] High Memory Usage Detected: {mem.percent}%")
+    elif mem.percent > danger_thresholds:
+        print_danger(f"[DANGER] Danger Memory Usage Detected: {mem.percent}%")
+
+    if disk.percent > warning_thresholds:
+        print_warning(f"[WARNING] High Disk Usage Detected: {disk.percent}%")
+    elif disk.percent > danger_thresholds:
+        print_danger(f"[DANGER] Danger Disk Usage Detected: {disk.percent}%")
+
+
+def print_warning(str):
+    YELLOW = "\033[93m"
+    RESET = "\033[0m"
+    print(f"{YELLOW}{str}{RESET}")
+
+def print_danger(str):
     RED = "\033[91m"
     RESET = "\033[0m"
-    if cpu > 80:
-        print(f"{RED}[WARNING] High CPU Usage Detected: {cpu}%{RESET}")
-    if mem.percent > 80:
-        print(f"{RED}[WARnING] High Memory Usage Detected: {mem.percent}{RESET}%")
-    if disk.percent > 80:
-        print(f"{RED}[WARNING] High Disk Usage Detected: {disk.percent}{RESET}%")
+    print(f"{RED}{str}{RESET}")
+    
+    
+
+
 
 if __name__ == "__main__":
     main()
