@@ -128,7 +128,7 @@ def collect_args_and_print(args):
 def check_and_warning(cpu, mem, disk):
     warning_thresholds, danger_thresholds = get_thresholds()
     get_warning(cpu, mem, disk, warning_thresholds, danger_thresholds)
-    
+
 
 def get_thresholds(warning_thresholds=None, danger_thresholds=None):
     if not warning_thresholds:
@@ -139,20 +139,20 @@ def get_thresholds(warning_thresholds=None, danger_thresholds=None):
 
 
 def get_warning(cpu, mem, disk, warning_thresholds, danger_thresholds):
-    if cpu > warning_thresholds:
-        print_warning(f"[WARNING] High CPU Usage Detected: {cpu}%")
-    elif cpu > danger_thresholds:
+    if cpu > danger_thresholds:
         print_danger(f"[DANGER] Danger CPU Usage Detected: {cpu}%")
+    elif cpu > warning_thresholds:
+        print_warning(f"[WARNING] High CPU Usage Detected: {cpu}%")
 
-    if mem.percent > warning_thresholds:
-        print_warning(f"[WARNING] High Memory Usage Detected: {mem.percent}%")
-    elif mem.percent > danger_thresholds:
+    if mem.percent > danger_thresholds:
         print_danger(f"[DANGER] Danger Memory Usage Detected: {mem.percent}%")
+    elif mem.percent > warning_thresholds:
+        print_warning(f"[WARNING] High Memory Usage Detected: {mem.percent}%")
 
-    if disk.percent > warning_thresholds:
-        print_warning(f"[WARNING] High Disk Usage Detected: {disk.percent}%")
-    elif disk.percent > danger_thresholds:
+    if disk.percent > danger_thresholds:
         print_danger(f"[DANGER] Danger Disk Usage Detected: {disk.percent}%")
+    elif disk.percent > warning_thresholds:
+        print_warning(f"[WARNING] High Disk Usage Detected: {disk.percent}%")
 
 
 def print_warning(str):
