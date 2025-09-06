@@ -1,6 +1,7 @@
-import psutil
 import argparse
 import time
+import psutil
+import sys
 
 def main():
     parser = argparse.ArgumentParser(description="The system monitor")
@@ -9,7 +10,8 @@ def main():
     parser.add_argument("-d", "--disk", action="store_true", help="check the Disk")
     parser.add_argument("-n", "--net", action="store_true", help="check the Network")
     parser.add_argument("-a", "--daemon", action="store_true", help="run in daemon mode(every 30s)")
-
+    parser.add_argument("--warning", type=get_positive_int, help="Warning threshold (default: 70)")
+    parser.add_argument("--danger", type=get_positive_int, help="Danger threshold (default: 90)")
 
     args = parser.parse_args()
 
@@ -18,7 +20,7 @@ def main():
         time.sleep(1)
         print("Collecting system information every 30 seconds.")
         time.sleep(1)
-        print("Press Ctrl + C to exit\nf")
+        print("Press Ctrl + C to exit\n")
         try:
             while True:
                 collect_args_and_print(args)
@@ -36,7 +38,7 @@ def get_cpu_usage():
     return usage
 
 
-def get_each_core_of_cpu_usage():
+def get_cpu_usage_per_core():
     usage = psutil.cpu_percent(interval=0.1, percpu=True)
     return usage
 
@@ -106,7 +108,7 @@ def collect_args_and_print(args):
     args_dict.pop("daemon", None)
 
     cpu_usage = get_cpu_usage()
-    each_core_of_cpu_usage = get_each_core_of_cpu_usage()
+    each_core_of_cpu_usage = get_cpu_usage_per_core()
     mem_usage = get_memory_usage()
     disk_usage = get_disk_usage()
     net_speed = get_net_speed()
@@ -122,36 +124,37 @@ def collect_args_and_print(args):
         if args.net:
             print_net_speed(net_speed)
     
+    get_thresholds(args.warning, args.danger)
     check_and_warning(cpu_usage, mem_usage, disk_usage)
     
 
 def check_and_warning(cpu, mem, disk):
-    warning_thresholds, danger_thresholds = get_thresholds()
-    get_warning(cpu, mem, disk, warning_thresholds, danger_thresholds)
+    warning, danger = get_thresholds()
+    get_warning(cpu, mem, disk, warning, danger)
 
 
-def get_thresholds(warning_thresholds=None, danger_thresholds=None):
-    if not warning_thresholds:
-        warning_thresholds = 70
-    if not danger_thresholds:
-        danger_thresholds = 90 
-    return warning_thresholds, danger_thresholds
+def get_thresholds(warning=None, danger=None):
+    if warning is None:
+        warning = 70
+    if danger is None:
+        danger = 90 
+    return warning, danger
 
 
-def get_warning(cpu, mem, disk, warning_thresholds, danger_thresholds):
-    if cpu > danger_thresholds:
+def get_warning(cpu, mem, disk, warning, danger):
+    if cpu > danger:
         print_danger(f"CPU Usage Detected: {cpu}%")
-    elif cpu > warning_thresholds:
+    elif cpu > warning:
         print_warning(f"CPU Usage Detected: {cpu}%")
 
-    if mem.percent > danger_thresholds:
+    if mem.percent > danger:
         print_danger(f"Memory Usage Detected: {mem.percent}%")
-    elif mem.percent > warning_thresholds:
+    elif mem.percent > warning:
         print_warning(f"Memory Usage Detected: {mem.percent}%")
 
-    if disk.percent > danger_thresholds:
+    if disk.percent > danger:
         print_danger(f"Disk Usage Detected: {disk.percent}%")
-    elif disk.percent > warning_thresholds:
+    elif disk.percent > warning:
         print_warning(f"Disk Usage Detected: {disk.percent}%")
 
 
@@ -164,10 +167,15 @@ def print_danger(s):
     RED = "\033[91m"
     RESET = "\033[0m"
     print(f"{RED}[DANGER] Danger {s}{RESET}")
+
+def get_positive_int(value):
+    try:
+        value = int(value)
+    except ValueError:
+        sys.exit("The threshold must be a positive integer")
+    if value < 0:
+        sys.exit("The threshold must be a positive integer")
+    return value
     
-    
-
-
-
 if __name__ == "__main__":
     main()
