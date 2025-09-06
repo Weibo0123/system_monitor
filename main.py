@@ -1,9 +1,65 @@
+"""
+System Monitor
+
+Description:
+    This code help you to monite your system, it could work on Linux, Windows and Mac.
+    It can help you check CPU, Disk and Network
+    It support deamon mode
+    There is also warning and danger alerts
+"""
+
 import argparse
 import time
 import psutil
-import sys
 
+# region Main
+# Main Funtion
 def main():
+    args = parse_args()
+
+    if args.daemon:
+        run_daemon_mode(args, args.warning, args.danger)
+    else:
+        collect_args_and_print(args, args.warning, args.danger)
+
+
+
+# region Logic
+# Logic Functions
+def collect_system_data():
+    return{
+        "cpu": get_cpu_usage(),
+        "cpu_cores": get_cpu_usage_per_core(),
+        "mem": get_memory_usage(),
+        "disk": get_disk_usage(),
+        "net": get_net_speed()
+    }
+
+
+def print_select_data(args, data):
+    if not(args.cpu or args.mem or args.disk or args.net):
+        print_all_usage_percentage(data["cpu"], data["mem"], data["disk"], data["net"])
+    else:
+        if args.cpu:
+            print_cpu_usage(data["cpu"], data["cpu_cores"])
+        if args.mem:
+            print_memory_usage(data["mem"])
+        if args.disk:
+            print_disk_usage(data["disk"])
+        if args.net:
+            print_net_speed(data["net"])
+
+
+def collect_args_and_print(args, warning, danger):
+    data = collect_system_data()
+    print_select_data(args, data)
+    check_and_warning(data, warning, danger)
+
+
+
+# region Arguments
+# Arguments Parsing 
+def parse_args():
     parser = argparse.ArgumentParser(description="The system monitor")
     parser.add_argument("-c", "--cpu", action="store_true", help="check the CPU")
     parser.add_argument("-m", "--mem", action="store_true", help="check the Memory")
@@ -12,18 +68,20 @@ def main():
     parser.add_argument("-a", "--daemon", action="store_true", help="run in daemon mode(every 30s)")
     parser.add_argument("--warning", type=get_positive_int, default=70, help="Warning threshold (default: 70)")
     parser.add_argument("--danger", type=get_positive_int, default=90, help="Danger threshold (default: 90)")
-
-    args = parser.parse_args()
-
-    warning, danger = args.warning, args.danger
+    
+    return parser.parse_args
 
 
+def get_positive_int(value):
+    try:
+        value = int(value)
+    except (TypeError, ValueError):
+        raise argparse.ArgumentTypeError("The threshold must be a positive integer")
+    if value < 0:
+        raise argparse.ArgumentTypeError("The threshold must be a positive integer")
+    return value
 
-    if args.daemon:
-        run_daemon_mode(args, warning, danger)
-    else:
-        collect_args_and_print(args, warning, danger)
-        
+
 
 def run_daemon_mode(args, warning, danger, interval=30):
     print("Daemon mode enabled")
@@ -40,6 +98,9 @@ def run_daemon_mode(args, warning, danger, interval=30):
         print("Thank you for using System Monitor. Goodbye!")
 
 
+
+# region Collection
+# System Data Collection
 def get_cpu_usage():
     usage = psutil.cpu_percent(interval=0.1)
     return usage
@@ -71,8 +132,12 @@ def get_net_speed(interval=1):
     packets_recv = (new_value.packets_recv - old_value.packets_recv) / interval
 
     return [bytes_sent, bytes_recv, packets_sent, packets_recv]
+# endregion
 
 
+
+# region Print
+# Printing Functions
 def print_all_usage_percentage(cpu, mem, disk, net):
     print(f"CPU Usage: {cpu}%" )
     print(f"Memory Usage: {mem.percent}%")
@@ -108,39 +173,15 @@ def print_net_speed(net):
     print(f"Download Speed: {net[1] / (1024):.2f} KB/s")
     print(f"Packets Upload: {int(net[2])} Packets/s")
     print(f"Packets Download: {int(net[3])} Packets/s\n")
+# endregion
 
 
-def collect_system_data():
-    return{
-        "cpu": get_cpu_usage(),
-        "cpu_cores": get_cpu_usage_per_core(),
-        "mem": get_memory_usage(),
-        "disk": get_disk_usage(),
-        "net": get_net_speed()
-    }
 
-def print_select_data(args, data):
-    if not(args.cpu or args.mem or args.disk or args.net):
-        print_all_usage_percentage(data["cpu"], data["mem"], data["disk"], data["net"])
-    else:
-        if args.cpu:
-            print_cpu_usage(data["cpu"], data["cpu_cores"])
-        if args.mem:
-            print_memory_usage(data["mem"])
-        if args.disk:
-            print_disk_usage(data["disk"])
-        if args.net:
-            print_net_speed(data["net"])
-
-
-def collect_args_and_print(args, warning, danger):
-    data = collect_system_data()
-    print_select_data(args, data)
-    check_and_warning(data, warning, danger)
-
-
+# region Alerts
+# Danger / Warning Alerts
 def check_and_warning(data, warning, danger):
     get_warning(data["cpu"], data["mem"], data["disk"], warning, danger)
+
 
 def get_warning(cpu, mem, disk, warning, danger):
     if cpu > danger:
@@ -164,19 +205,14 @@ def print_warning(s):
     RESET = "\033[0m"
     print(f"{YELLOW}[WARNING] High {s}{RESET}")
 
+
 def print_danger(s):
     RED = "\033[91m"
     RESET = "\033[0m"
     print(f"{RED}[DANGER] Danger {s}{RESET}")
+# endriegion
 
-def get_positive_int(value):
-    try:
-        value = int(value)
-    except (TypeError, ValueError):
-        raise argparse.ArgumentTypeError("The threshold must be a positive integer")
-    if value < 0:
-        raise argparse.ArgumentTypeError("The threshold must be a positive integer")
-    return value
     
+
 if __name__ == "__main__":
     main()
