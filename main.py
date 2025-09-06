@@ -120,7 +120,7 @@ def collect_system_data():
     }
 
 def print_select_data(args, data):
-    if not(args.cpu or args.mem or args.disk, args.net):
+    if not(args.cpu or args.mem or args.disk or args.net):
         print_all_usage_percentage(data["cpu"], data["mem"], data["disk"], data["net"])
     else:
         if args.cpu:
