@@ -140,30 +140,30 @@ def get_thresholds(warning_thresholds=None, danger_thresholds=None):
 
 def get_warning(cpu, mem, disk, warning_thresholds, danger_thresholds):
     if cpu > danger_thresholds:
-        print_danger(f"[DANGER] Danger CPU Usage Detected: {cpu}%")
+        print_danger(f"CPU Usage Detected: {cpu}%")
     elif cpu > warning_thresholds:
-        print_warning(f"[WARNING] High CPU Usage Detected: {cpu}%")
+        print_warning(f"CPU Usage Detected: {cpu}%")
 
     if mem.percent > danger_thresholds:
-        print_danger(f"[DANGER] Danger Memory Usage Detected: {mem.percent}%")
+        print_danger(f"Memory Usage Detected: {mem.percent}%")
     elif mem.percent > warning_thresholds:
-        print_warning(f"[WARNING] High Memory Usage Detected: {mem.percent}%")
+        print_warning(f"Memory Usage Detected: {mem.percent}%")
 
     if disk.percent > danger_thresholds:
-        print_danger(f"[DANGER] Danger Disk Usage Detected: {disk.percent}%")
+        print_danger(f"Disk Usage Detected: {disk.percent}%")
     elif disk.percent > warning_thresholds:
-        print_warning(f"[WARNING] High Disk Usage Detected: {disk.percent}%")
+        print_warning(f"Disk Usage Detected: {disk.percent}%")
 
 
-def print_warning(str):
+def print_warning(s):
     YELLOW = "\033[93m"
     RESET = "\033[0m"
-    print(f"{YELLOW}{str}{RESET}")
+    print(f"{YELLOW}[WARNING] High {s}{RESET}")
 
-def print_danger(str):
+def print_danger(s):
     RED = "\033[91m"
     RESET = "\033[0m"
-    print(f"{RED}{str}{RESET}")
+    print(f"{RED}[DANGER] Danger {s}{RESET}")
     
     
 
