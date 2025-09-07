@@ -10,12 +10,16 @@ Description:
 
 import argparse
 import time
+import json
+import os
 import psutil
 
+CONFIG_FILE = "config.json"
 # region Main
 # Main Funtion
 def main():
     args = parse_args()
+    save_thresholds(args.warning, args.danger)
 
     if args.daemon:
         run_daemon_mode(args, args.warning, args.danger)
@@ -62,14 +66,16 @@ def collect_args_and_print(args, warning, danger):
 # region Arguments
 # Arguments Parsing 
 def parse_args():
+    default_thresholds = load_thresholds()
+
     parser = argparse.ArgumentParser(description="The system monitor")
     parser.add_argument("-c", "--cpu", action="store_true", help="check the CPU")
     parser.add_argument("-m", "--mem", action="store_true", help="check the Memory")
     parser.add_argument("-d", "--disk", action="store_true", help="check the Disk")
     parser.add_argument("-n", "--net", action="store_true", help="check the Network")
     parser.add_argument("-a", "--daemon", action="store_true", help="run in daemon mode(every 30s)")
-    parser.add_argument("--warning", type=get_positive_int, default=70, help="Warning threshold (default: 70)")
-    parser.add_argument("--danger", type=get_positive_int, default=90, help="Danger threshold (default: 90)")
+    parser.add_argument("--warning", type=get_positive_int, default=default_thresholds["warning"], help=f"Warning threshold (default: {default_thresholds["warning"]})")
+    parser.add_argument("--danger", type=get_positive_int, default=default_thresholds["danger"], help=f"Danger threshold (default: {default_thresholds["danger"]})")
     
     return parser.parse_args()
 
@@ -211,6 +217,19 @@ def print_alert(level, msg):
     RESET = "\033[0m"
     prefixes = {"warning": "[WARNING]", "danger": "[DANGER]"}
     print(f"{colors[level]}{prefixes[level]} {msg}{RESET}")  
+
+
+def save_thresholds(warning, danger):
+    data = {"warning": warning, "danger": danger}
+    with open(CONFIG_FILE, "w") as file:
+        json.dump(data, file, indent=4)
+
+
+def load_thresholds():
+    if os.path.exists(CONFIG_FILE):
+        with open(CONFIG_FILE, "r") as file:
+            return json.load(file)
+    return {"warning": 70, "danger": 90}
 # endriegion
 
     
