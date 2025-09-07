@@ -84,9 +84,11 @@ def get_positive_int(value):
     try:
         value = int(value)
     except (TypeError, ValueError):
-        raise argparse.ArgumentTypeError("The threshold must be a positive integer")
+        raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
     if value < 0:
-        raise argparse.ArgumentTypeError("The threshold must be a positive integer")
+        raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
+    if value > 100:
+        raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
     return value
 
 
@@ -102,7 +104,7 @@ def run_daemon_mode(args, warning, danger, interval=30):
             collect_args_and_print(args, warning, danger)
             time.sleep(interval)
     except KeyboardInterrupt:
-        print("\n\n Daemon mode exited.")
+        print("\n\nDaemon mode exited.")
         print("Thank you for using System Monitor. Goodbye!")
 #endregion
 
@@ -153,10 +155,10 @@ def print_section(title, data):
 
 
 def print_cpu_usage(usage, cores):
-    items = {"Total": f"{usage}%"}
+    data = {"Total": f"{usage}%"}
     for i, core in enumerate(cores):
-        items[f"Core {i+1}"] = f"{core}%"
-    print_section("CPU Usage", items)
+        data[f"Core {i+1}"] = f"{core}%"
+    print_section("CPU Usage", data)
 
 
 def print_memory_usage(mem):
