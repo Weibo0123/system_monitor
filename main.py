@@ -21,6 +21,7 @@ def main():
         run_daemon_mode(args, args.warning, args.danger)
     else:
         collect_args_and_print(args, args.warning, args.danger)
+#endregion
 
 
 
@@ -29,7 +30,7 @@ def main():
 def collect_system_data():
     return{
         "cpu": get_cpu_usage(),
-        "cpu_cores": get_cpu_usage_per_core(),
+        "cpu_cores": get_cpu_usage(per_core=True),
         "mem": get_memory_usage(),
         "disk": get_disk_usage(),
         "net": get_net_speed()
@@ -54,6 +55,7 @@ def collect_args_and_print(args, warning, danger):
     data = collect_system_data()
     print_select_data(args, data)
     check_and_warning(data, warning, danger)
+#endregion
 
 
 
@@ -96,6 +98,7 @@ def run_daemon_mode(args, warning, danger, interval=30):
     except KeyboardInterrupt:
         print("\n\n Daemon mode exited.")
         print("Thank you for using System Monitor. Goodbye!")
+#endregion
 
 
 
@@ -103,10 +106,6 @@ def run_daemon_mode(args, warning, danger, interval=30):
 # System Data Collection
 def get_cpu_usage(per_core=False):
     return psutil.cpu_percent(interval=0.1, percpu=per_core)
-
-
-def get_cpu_usage_per_core():
-    return psutil.cpu_percent(interval=0.1, percpu=True)
 
 
 def get_memory_usage():
@@ -189,36 +188,29 @@ def print_net_speed(net):
 # region Alerts
 # Danger / Warning Alerts
 def check_and_warning(data, warning, danger):
-    get_warning(data["cpu"], data["mem"], data["disk"], warning, danger)
+    cpu, mem, disk = data["cpu"], data["mem"], data["disk"]
 
-
-def get_warning(cpu, mem, disk, warning, danger):
     if cpu > danger:
-        print_danger(f"CPU Usage Detected: {cpu}%")
+        print_alert("danger", f"High CPU Usage Detected: {cpu}%")
     elif cpu > warning:
-        print_warning(f"CPU Usage Detected: {cpu}%")
+        print_alert("warning", f"Danger CPU Usage Detected: {cpu}%")
 
     if mem.percent > danger:
-        print_danger(f"Memory Usage Detected: {mem.percent}%")
+        print_alert("danger", f"Memory Usage Detected: {mem.percent}%")
     elif mem.percent > warning:
-        print_warning(f"Memory Usage Detected: {mem.percent}%")
+        print_alert("warning", f"Memory Usage Detected: {mem.percent}%")
 
     if disk.percent > danger:
-        print_danger(f"Disk Usage Detected: {disk.percent}%")
+        print_alert("danger", f"Disk Usage Detected: {disk.percent}%")
     elif disk.percent > warning:
-        print_warning(f"Disk Usage Detected: {disk.percent}%")
+        print_alert("warning", f"Disk Usage Detected: {disk.percent}%")
 
 
-def print_warning(s):
-    YELLOW = "\033[93m"
+def print_alert(level, msg):
+    colors = {"warning": "\033[93m", "danger": "\033[91m"}
     RESET = "\033[0m"
-    print(f"{YELLOW}[WARNING] High {s}{RESET}")
-
-
-def print_danger(s):
-    RED = "\033[91m"
-    RESET = "\033[0m"
-    print(f"{RED}[DANGER] Danger {s}{RESET}")
+    prefixes = {"warning": "[WARNING]", "danger": "[DANGER]"}
+    print(f"{colors[level]}{prefixes[level]} {msg}{RESET}")
 # endriegion
 
     
