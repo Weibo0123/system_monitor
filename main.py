@@ -69,7 +69,7 @@ def parse_args():
     parser.add_argument("--warning", type=get_positive_int, default=70, help="Warning threshold (default: 70)")
     parser.add_argument("--danger", type=get_positive_int, default=90, help="Danger threshold (default: 90)")
     
-    return parser.parse_args
+    return parser.parse_args()
 
 
 def get_positive_int(value):
@@ -144,35 +144,48 @@ def print_all_usage_percentage(cpu, mem, disk, net):
     print(f"Disk Usage: {disk.percent}%")
     print(f"Download Speed: {net[1] / (1024 ** 2):.2f} MB\n")
 
+def print_section(title, data):
+    print(f"{title}:")
+    for key, value in data.items():
+        print(f" {key}: {value}")
+    print()
+
 
 def print_cpu_usage(usage, cores):
-    print(f"CPU Usage: {usage}%")
-    for i, usage in enumerate(cores):
-        print(f"CPU Core {i+1}: {usage}%\n")
+    items = {"Total": f"{usage}%"}
+    for i, core in enumerate(cores):
+        items[f"Core {i+1}"] = f"{core}%"
+    print_section("CPU Usage", items)
 
 
 def print_memory_usage(mem):
-    print(f"Memory Usage:")
-    print(f"Total: {mem.total / (1024 ** 3):.2f} GB")
-    print(f"Used: {mem.used / (1024 ** 3):.2f} GB")
-    print(f"Available: {mem.available/ (1024 ** 3):.2f} GB")
-    print(f"Usage: {mem.percent}%\n")
+    print_section("Memory Usage", 
+    {
+        "Total": f"{mem.total / (1024 ** 3):.2f} GB",
+        "Used": f"{mem.used / (1024 ** 3):.2f} GB",
+        "Available": f"{mem.available / (1024 ** 3):.2f} GB",
+        "Usage": f"{mem.percent}%"
+    })
 
 
 def print_disk_usage(disk):
-    print(f"Disk Usage:")
-    print(f"Total: {disk.total / (1024 ** 3):.2f} GB")
-    print(f"Used: {disk.used / (1024 ** 3):.2f} GB")
-    print(f"Free: {disk.free/ (1024 ** 3):.2f} GB")
-    print(f"Usage: {disk.percent}%\n")
+    print_section("Disk Usage",
+    {
+        "Total": f"{disk.total / (1024 ** 3):.2f} GB",
+        "Used": f"{disk.used / (1024 ** 3):.2f} GB",
+        "Free": f"{disk.free / (1024 ** 3):.2f} GB",
+        "Usage": f"{disk.percent}%"
+    })
 
 
 def print_net_speed(net):
-    print(f"Network Speed:")
-    print(f"Upload Speed: {net[0] / (1024):.2f} KB/s")
-    print(f"Download Speed: {net[1] / (1024):.2f} KB/s")
-    print(f"Packets Upload: {int(net[2])} Packets/s")
-    print(f"Packets Download: {int(net[3])} Packets/s\n")
+    print_section("Network Speed", 
+    {
+        "Upload Speed": f"{net[0] / 1024:.2f} KB/s",
+        "Download Speed": f"{net[1] / 1024:.2f} KB/s",
+        "Packets Upload": f"{int(net[2])} Packets/s",
+        "Packets Download": f"{int(net[3])} Packets/s"
+    })
 # endregion
 
 
