@@ -101,24 +101,20 @@ def run_daemon_mode(args, warning, danger, interval=30):
 
 # region Collection
 # System Data Collection
-def get_cpu_usage():
-    usage = psutil.cpu_percent(interval=0.1)
-    return usage
+def get_cpu_usage(per_core=False):
+    return psutil.cpu_percent(interval=0.1, percpu=per_core)
 
 
 def get_cpu_usage_per_core():
-    usage = psutil.cpu_percent(interval=0.1, percpu=True)
-    return usage
+    return psutil.cpu_percent(interval=0.1, percpu=True)
 
 
 def get_memory_usage():
-    usage = psutil.virtual_memory()
-    return usage
+    return psutil.virtual_memory()
 
 
 def get_disk_usage():
-    usage = psutil.disk_usage("/")
-    return usage
+    return psutil.disk_usage("/")
 
 
 def get_net_speed(interval=1):
