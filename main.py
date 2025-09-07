@@ -191,26 +191,26 @@ def check_and_warning(data, warning, danger):
     cpu, mem, disk = data["cpu"], data["mem"], data["disk"]
 
     if cpu > danger:
-        print_alert("danger", f"High CPU Usage Detected: {cpu}%")
+        print_alert("danger", f"Danger CPU Usage Detected: {cpu}%")
     elif cpu > warning:
-        print_alert("warning", f"Danger CPU Usage Detected: {cpu}%")
+        print_alert("warning", f"High CPU Usage Detected: {cpu}%")
 
     if mem.percent > danger:
-        print_alert("danger", f"Memory Usage Detected: {mem.percent}%")
+        print_alert("danger", f"Danger Memory Usage Detected: {mem.percent}%")
     elif mem.percent > warning:
-        print_alert("warning", f"Memory Usage Detected: {mem.percent}%")
+        print_alert("warning", f"High Memory Usage Detected: {mem.percent}%")
 
     if disk.percent > danger:
-        print_alert("danger", f"Disk Usage Detected: {disk.percent}%")
+        print_alert("danger", f"Danger Disk Usage Detected: {disk.percent}%")
     elif disk.percent > warning:
-        print_alert("warning", f"Disk Usage Detected: {disk.percent}%")
+        print_alert("warning", f"High Disk Usage Detected: {disk.percent}%")
 
 
 def print_alert(level, msg):
     colors = {"warning": "\033[93m", "danger": "\033[91m"}
     RESET = "\033[0m"
     prefixes = {"warning": "[WARNING]", "danger": "[DANGER]"}
-    print(f"{colors[level]}{prefixes[level]} {msg}{RESET}")
+    print(f"{colors[level]}{prefixes[level]} {msg}{RESET}")  
 # endriegion
 
     
