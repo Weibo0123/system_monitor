@@ -195,23 +195,36 @@ def print_net_speed(net):
 
 # region Alerts
 # Danger / Warning Alerts
+
+def get_alerts(data, warning, danger):
+    alerts = []
+
+    if data["cpu"] > danger:
+        alerts.append(("danger", f"Danger CPU Usage Detected: {data['cpu']}%"))
+    elif data["cpu"] > warning:
+        alerts.append(("warning", f"High CPU Usage Detected: {data['cpu']}%"))
+
+    if data["mem"].percent > danger:
+        alerts.append(("danger", f"Danger Memory Usage Detected: {data['mem'].percent}%"))
+    elif data["mem"].percent > warning:
+        alerts.append(("warning", f"High Memory Usage Detected: {data['mem'].percent}%"))
+
+    if data["disk"].percent > danger:
+        alerts.append(("danger", f"Danger Disk Usage Detected: {data['disk'].percent}%"))
+    elif data["disk"].percent > warning:
+        alerts.append(("warning", f"High Disk Usage Detected: {data['disk'].percent}%"))
+
+    return alerts
+
+
 def check_and_warning(data, warning, danger):
-    cpu, mem, disk = data["cpu"], data["mem"], data["disk"]
+    alerts = get_alerts(data, warning, danger)
+    print_alerts(alerts)
 
-    if cpu > danger:
-        print_alert("danger", f"Danger CPU Usage Detected: {cpu}%")
-    elif cpu > warning:
-        print_alert("warning", f"High CPU Usage Detected: {cpu}%")
 
-    if mem.percent > danger:
-        print_alert("danger", f"Danger Memory Usage Detected: {mem.percent}%")
-    elif mem.percent > warning:
-        print_alert("warning", f"High Memory Usage Detected: {mem.percent}%")
-
-    if disk.percent > danger:
-        print_alert("danger", f"Danger Disk Usage Detected: {disk.percent}%")
-    elif disk.percent > warning:
-        print_alert("warning", f"High Disk Usage Detected: {disk.percent}%")
+def print_alerts(alerts):
+    for level, msg in alerts:
+        print_alert(level, msg)
 
 
 def print_alert(level, msg):
