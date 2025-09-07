@@ -11,7 +11,6 @@ Description:
 import argparse
 import time
 import json
-import os
 import psutil
 
 CONFIG_FILE = "config.json"
@@ -145,7 +144,7 @@ def print_all_usage_percentage(cpu, mem, disk, net):
     print(f"CPU Usage: {cpu}%" )
     print(f"Memory Usage: {mem.percent}%")
     print(f"Disk Usage: {disk.percent}%")
-    print(f"Download Speed: {net[1] / (1024 ** 2):.2f} MB\n")
+    print(f"Download Speed: {net[1] / 1024:.2f} KB\n")
 
 def print_section(title, data):
     print(f"{title}:")
@@ -199,19 +198,19 @@ def print_net_speed(net):
 def get_alerts(data, warning, danger):
     alerts = []
 
-    if data["cpu"] > danger:
+    if data["cpu"] >= danger:
         alerts.append(("danger", f"Danger CPU Usage Detected: {data['cpu']}%"))
-    elif data["cpu"] > warning:
+    elif data["cpu"] >= warning:
         alerts.append(("warning", f"High CPU Usage Detected: {data['cpu']}%"))
 
-    if data["mem"].percent > danger:
+    if data["mem"].percent >= danger:
         alerts.append(("danger", f"Danger Memory Usage Detected: {data['mem'].percent}%"))
-    elif data["mem"].percent > warning:
+    elif data["mem"].percent >= warning:
         alerts.append(("warning", f"High Memory Usage Detected: {data['mem'].percent}%"))
 
-    if data["disk"].percent > danger:
+    if data["disk"].percent >= danger:
         alerts.append(("danger", f"Danger Disk Usage Detected: {data['disk'].percent}%"))
-    elif data["disk"].percent > warning:
+    elif data["disk"].percent >= warning:
         alerts.append(("warning", f"High Disk Usage Detected: {data['disk'].percent}%"))
 
     return alerts

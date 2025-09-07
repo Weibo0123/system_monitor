@@ -1,5 +1,5 @@
 import pytest
-from main import get_positive_int, check_and_warning, load_thresholds
+from main import get_positive_int, get_alerts, load_thresholds
 import argparse
 
 def test_get_postive_int():
@@ -15,6 +15,57 @@ def test_get_postive_int():
     with pytest.raises(argparse.ArgumentTypeError):
         get_positive_int("cat")
 
+
+class MockUsage:
+    def __init__(self, percent):
+        self.percent = percent
+
+
+def test_get_alerts():
+    data = {
+        "cpu": 70,
+        "mem": MockUsage(50),
+        "disk": MockUsage(40)
+    }
+    alerts = get_alerts(data, warning=70, danger=90)
+    assert alerts == [("warning", "High CPU Usage Detected: 70%")]
+
+    data = {
+        "cpu": 80,
+        "mem": MockUsage(75),
+        "disk": MockUsage(70)
+    }
+    alerts = get_alerts(data, warning=70, danger=90)
+    assert ("warning", "High CPU Usage Detected: 80%") in alerts
+    assert ("warning", "High Memory Usage Detected: 75%") in alerts
+    assert ("warning", "High Disk Usage Detected: 70%") in alerts
+
+    data = {
+        "cpu": 90,
+        "mem": MockUsage(70),
+        "disk": MockUsage(20)
+    }
+    alerts = get_alerts(data, warning=70, danger=90)
+    assert ("danger", "Danger CPU Usage Detected: 90%") in alerts
+    assert ("warning", "High Memory Usage Detected: 70%") in alerts
+
+    data = {
+        "cpu": 50,
+        "mem": MockUsage(70),
+        "disk": MockUsage(90)
+    }
+    alerts = get_alerts(data, warning=50, danger=70)
+    assert ("warning", "High CPU Usage Detected: 50%") in alerts
+    assert ("danger", "Danger Memory Usage Detected: 70%") in alerts
+    assert ("danger", "Danger Disk Usage Detected: 90%") in alerts
+
+    data = {
+        "cpu": 50,
+        "mem": MockUsage(40),
+        "disk": MockUsage(30)
+    }
+    alerts = get_alerts(data, warning=70, danger=90)
+    assert alerts == []
 
     
     
