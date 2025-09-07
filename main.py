@@ -74,8 +74,8 @@ def parse_args():
     parser.add_argument("-d", "--disk", action="store_true", help="check the Disk")
     parser.add_argument("-n", "--net", action="store_true", help="check the Network")
     parser.add_argument("-a", "--daemon", action="store_true", help="run in daemon mode(every 30s)")
-    parser.add_argument("--warning", type=get_positive_int, default=default_thresholds["warning"], help=f"Warning threshold (default: {default_thresholds["warning"]})")
-    parser.add_argument("--danger", type=get_positive_int, default=default_thresholds["danger"], help=f"Danger threshold (default: {default_thresholds["danger"]})")
+    parser.add_argument("--warning", type=get_positive_int, default=default_thresholds["warning"], help=f"Warning threshold (default: {default_thresholds['warning']})")
+    parser.add_argument("--danger", type=get_positive_int, default=default_thresholds["danger"], help=f"Danger threshold (default: {default_thresholds['danger']})")
     
     return parser.parse_args()
 
@@ -148,7 +148,7 @@ def print_all_usage_percentage(cpu, mem, disk, net):
 def print_section(title, data):
     print(f"{title}:")
     for key, value in data.items():
-        print(f" {key}: {value}")
+        print(f"{key}: {value}")
     print()
 
 
@@ -226,10 +226,12 @@ def save_thresholds(warning, danger):
 
 
 def load_thresholds():
-    if os.path.exists(CONFIG_FILE):
-        with open(CONFIG_FILE, "r") as file:
-            return json.load(file)
-    return {"warning": 70, "danger": 90}
+        try:
+            with open(CONFIG_FILE, "r") as file:
+                return json.load(file)
+        except (FileNotFoundError, json.JSONDecodeError, OSError):
+            return {"warning": 70, "danger": 90}
+    
 # endriegion
 
     
