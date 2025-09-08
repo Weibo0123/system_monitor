@@ -1,8 +1,9 @@
 import pytest
-from main import get_positive_int, get_alerts, load_thresholds
+import json
+from main import get_positive_int, get_alerts, load_thresholds, save_thresholds
 import argparse
 
-def test_get_postive_int():
+def test_get_positive_int():
     assert get_positive_int(10) == 10
     assert get_positive_int(0) == 0
     assert get_positive_int(100) == 100
@@ -68,5 +69,35 @@ def test_get_alerts():
     assert alerts == []
 
     
-    
+def test_load_and_save_thresholds(tmp_path, monkeypatch):
+    config_file = tmp_path / "config.json"
+    monkeypatch.setattr("main.CONFIG_FILE", str(config_file))
+
+    save_thresholds(50, 70)
+    with open(config_file) as file:
+        data = json.load(file)
+    assert data == {"warning": 50, "danger": 70}
+    data = load_thresholds()
+    assert data == {"warning": 50, "danger": 70}
+
+    save_thresholds(0, 0)
+    with open(config_file) as file:
+        data = json.load(file)
+    assert data == {"warning": 0, "danger": 0}
+    data = load_thresholds()
+    assert data == {"warning": 0, "danger": 0}
+
+    save_thresholds(100, 100)
+    with open(config_file) as file:
+        data = json.load(file)
+    assert data == {"warning": 100, "danger": 100}
+    data = load_thresholds()
+    assert data == {"warning": 100, "danger": 100}
+
+
+def test_save_thresholds_with_file_not_exist(tmp_path, monkeypatch):
+    config_file = tmp_path / "non_exist.json"
+    monkeypatch.setattr("main.CONFIG_FILE", str(config_file))
+    data = load_thresholds()
+    assert data == {"warning": 70, "danger": 90}
 

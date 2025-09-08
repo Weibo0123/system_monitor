@@ -2,7 +2,7 @@
 System Monitor
 
 Description:
-    This code help you to monite your system, it could work on Linux, Windows and Mac.
+    This code help you to moniter your system, it could work on Linux, Windows and Mac.
     It can help you check CPU, Disk and Network
     It support deamon mode
     There is also warning and danger alerts
