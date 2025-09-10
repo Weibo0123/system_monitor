@@ -3,7 +3,7 @@ System Monitor
 
 Description:
     This code help you to moniter your system, it could work on Linux, Windows and Mac.
-    It can help you check CPU, Disk and Network
+    It can help you check CPU, , Memory, Disk and Network
     It support deamon mode
     There is also warning and danger alerts
 """
@@ -17,6 +17,9 @@ CONFIG_FILE = "config.json"
 # region Main
 # Main Funtion
 def main():
+    """
+    The main loop of the program.
+    """
     args = parse_args()
     save_thresholds(args.warning, args.danger)
 
@@ -30,7 +33,28 @@ def main():
 
 # region Logic
 # Logic Functions
+def parse_args():
+    """
+    Get the argument by the command from users.
+    """
+    default_thresholds = load_thresholds()
+
+    parser = argparse.ArgumentParser(description="The system monitor")
+    parser.add_argument("-c", "--cpu", action="store_true", help="check the CPU")
+    parser.add_argument("-m", "--mem", action="store_true", help="check the Memory")
+    parser.add_argument("-d", "--disk", action="store_true", help="check the Disk")
+    parser.add_argument("-n", "--net", action="store_true", help="check the Network")
+    parser.add_argument("-a", "--daemon", action="store_true", help="run in daemon mode(every 30s)")
+    parser.add_argument("--warning", type=get_positive_int, default=default_thresholds["warning"], help=f"Warning threshold (default: {default_thresholds['warning']})")
+    parser.add_argument("--danger", type=get_positive_int, default=default_thresholds["danger"], help=f"Danger threshold (default: {default_thresholds['danger']})")
+    
+    return parser.parse_args()
+
+    
 def collect_system_data():
+    """
+    Collect the system data includs the cpu, each cores of cpu, memory, disk, network.
+    """
     return{
         "cpu": get_cpu_usage(),
         "cpu_cores": get_cpu_usage(per_core=True),
@@ -41,6 +65,9 @@ def collect_system_data():
 
 
 def print_select_data(args, data):
+    """
+    Print the data that use asks.
+    """
     if not(args.cpu or args.mem or args.disk or args.net):
         print_all_usage_percentage(data["cpu"], data["mem"], data["disk"], data["net"])
     else:
@@ -55,44 +82,20 @@ def print_select_data(args, data):
 
 
 def collect_args_and_print(args, warning, danger):
+    """
+    collect the data that user asks and print them out.
+    It also checks if there are anything that needs to warn the user
+    """
     data = collect_system_data()
     print_select_data(args, data)
     check_and_warning(data, warning, danger)
-#endregion
-
-
-
-# region Arguments
-# Arguments Parsing 
-def parse_args():
-    default_thresholds = load_thresholds()
-
-    parser = argparse.ArgumentParser(description="The system monitor")
-    parser.add_argument("-c", "--cpu", action="store_true", help="check the CPU")
-    parser.add_argument("-m", "--mem", action="store_true", help="check the Memory")
-    parser.add_argument("-d", "--disk", action="store_true", help="check the Disk")
-    parser.add_argument("-n", "--net", action="store_true", help="check the Network")
-    parser.add_argument("-a", "--daemon", action="store_true", help="run in daemon mode(every 30s)")
-    parser.add_argument("--warning", type=get_positive_int, default=default_thresholds["warning"], help=f"Warning threshold (default: {default_thresholds['warning']})")
-    parser.add_argument("--danger", type=get_positive_int, default=default_thresholds["danger"], help=f"Danger threshold (default: {default_thresholds['danger']})")
-    
-    return parser.parse_args()
-
-
-def get_positive_int(value):
-    try:
-        value = int(value)
-    except (TypeError, ValueError):
-        raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
-    if value < 0:
-        raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
-    if value > 100:
-        raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
-    return value
-
 
 
 def run_daemon_mode(args, warning, danger, interval=30):
+    """
+    run the daemon mode, if the function doesn't get a interval.
+    The interval will be 30 seconds by default.
+    """
     print("Daemon mode enabled")
     time.sleep(1)
     print(f"Collecting system information every {interval} seconds.")
@@ -105,25 +108,52 @@ def run_daemon_mode(args, warning, danger, interval=30):
     except KeyboardInterrupt:
         print("\n\nDaemon mode exited.")
         print("Thank you for using System Monitor. Goodbye!")
-#endregion
+
+
+def get_positive_int(value):
+    """
+    Get the correct number for the threshols for the warning and danger.
+    """
+    try:
+        value = int(value)
+    except (TypeError, ValueError):
+        raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
+    if value < 0:
+        raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
+    if value > 100:
+        raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
+    return value
+#endregions
 
 
 
 # region Collection
 # System Data Collection
 def get_cpu_usage(per_core=False):
+    """
+    Get the percentage of the CPU usage.
+    """
     return psutil.cpu_percent(interval=0.1, percpu=per_core)
 
 
 def get_memory_usage():
+    """
+    Get the percentage of the usage of each cores of CPU.
+    """
     return psutil.virtual_memory()
 
 
 def get_disk_usage():
+    """
+    Get the disk usage.
+    """
     return psutil.disk_usage("/")
 
 
 def get_net_speed(interval=1):
+    """
+    Get network speed.
+    """
     old_value = psutil.net_io_counters()
     time.sleep(interval)
     new_value = psutil.net_io_counters()
@@ -141,12 +171,18 @@ def get_net_speed(interval=1):
 # region Print
 # Printing Functions
 def print_all_usage_percentage(cpu, mem, disk, net):
+    """
+    Print percentage of all the parts the function check.
+    """
     print(f"CPU Usage: {cpu}%" )
     print(f"Memory Usage: {mem.percent}%")
     print(f"Disk Usage: {disk.percent}%")
     print(f"Download Speed: {net[1] / 1024:.2f} KB\n")
 
 def print_section(title, data):
+    """
+    Print a title and a dictionary.
+    """
     print(f"{title}:")
     for key, value in data.items():
         print(f"{key}: {value}")
@@ -154,6 +190,9 @@ def print_section(title, data):
 
 
 def print_cpu_usage(usage, cores):
+    """
+    Return a dictionary of the CPU usage.
+    """
     data = {"Total": f"{usage}%"}
     for i, core in enumerate(cores):
         data[f"Core {i+1}"] = f"{core}%"
@@ -161,6 +200,9 @@ def print_cpu_usage(usage, cores):
 
 
 def print_memory_usage(mem):
+    """
+    Return a dictionary of the memory usage.
+    """
     print_section("Memory Usage", 
     {
         "Total": f"{mem.total / (1024 ** 3):.2f} GB",
@@ -171,6 +213,9 @@ def print_memory_usage(mem):
 
 
 def print_disk_usage(disk):
+    """
+    Return a dictionary of the disk usage.
+    """
     print_section("Disk Usage",
     {
         "Total": f"{disk.total / (1024 ** 3):.2f} GB",
@@ -181,6 +226,9 @@ def print_disk_usage(disk):
 
 
 def print_net_speed(net):
+    """
+    Return a dictionary of the network speed.
+    """
     print_section("Network Speed", 
     {
         "Upload Speed": f"{net[0] / 1024:.2f} KB/s",
@@ -196,6 +244,9 @@ def print_net_speed(net):
 # Danger / Warning Alerts
 
 def get_alerts(data, warning, danger):
+    """
+    Return a dictionary of the things that shuold warn the user.
+    """
     alerts = []
 
     if data["cpu"] >= danger:
@@ -217,16 +268,25 @@ def get_alerts(data, warning, danger):
 
 
 def check_and_warning(data, warning, danger):
+    """
+    Get the alerts and print them.
+    """
     alerts = get_alerts(data, warning, danger)
     print_alerts(alerts)
 
 
 def print_alerts(alerts):
+    """
+    Print the alerts.
+    """
     for level, msg in alerts:
-        print_alert(level, msg)
+        add_colour_to_alerts(level, msg)
 
 
-def print_alert(level, msg):
+def add_colour_to_alerts(level, msg):
+    """
+    Add colour to the alerts.
+    """
     colors = {"warning": "\033[93m", "danger": "\033[91m"}
     RESET = "\033[0m"
     prefixes = {"warning": "[WARNING]", "danger": "[DANGER]"}
@@ -234,17 +294,23 @@ def print_alert(level, msg):
 
 
 def save_thresholds(warning, danger):
+    """
+    Write the threshold into the Json file.
+    """
     data = {"warning": warning, "danger": danger}
     with open(CONFIG_FILE, "w") as file:
         json.dump(data, file, indent=4)
 
 
 def load_thresholds():
-        try:
-            with open(CONFIG_FILE, "r") as file:
-                return json.load(file)
-        except (FileNotFoundError, json.JSONDecodeError, OSError):
-            return {"warning": 70, "danger": 90}
+    """
+    Get the threshold from the file.
+    """
+    try:
+        with open(CONFIG_FILE, "r") as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {"warning": 70, "danger": 90}
     
 # endriegion
 
