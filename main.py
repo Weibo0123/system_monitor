@@ -2,7 +2,7 @@
 System Monitor
 
 Description:
-    This code help you to moniter your system, it could work on Linux, Windows and Mac.
+    This code help you to monitor your system, it could work on Linux, Windows and Mac.
     It can help you check CPU, , Memory, Disk and Network
     It support deamon mode
     There is also warning and danger alerts
@@ -24,10 +24,11 @@ def main():
     save_thresholds(args.warning, args.danger)
 
     if args.daemon:
-        run_daemon_mode(args, args.warning, args.danger)
+        run_daemon_mode(args, args.warning, args.danger, args.interval)
     else:
         collect_args_and_print(args, args.warning, args.danger)
 #endregion
+
 
 
 # region Argument
@@ -44,13 +45,13 @@ def parse_args():
     parser.add_argument("-d", "--disk", action="store_true", help="check the Disk")
     parser.add_argument("-n", "--net", action="store_true", help="check the Network")
     parser.add_argument("-a", "--daemon", action="store_true", help="run in daemon mode(every 30s)")
-    parser.add_argument("--warning", type=get_positive_int, default=default_thresholds["warning"], help=f"Warning threshold (default: {default_thresholds['warning']})")
-    parser.add_argument("--danger", type=get_positive_int, default=default_thresholds["danger"], help=f"Danger threshold (default: {default_thresholds['danger']})")
-    
+    parser.add_argument("--warning", type=get_int_between_0_and_100, default=default_thresholds["warning"], help=f"Warning threshold (default: {default_thresholds['warning']})")
+    parser.add_argument("--danger", type=get_int_between_0_and_100, default=default_thresholds["danger"], help=f"Danger threshold (default: {default_thresholds['danger']})")
+    parser.add_argument("--interval", type=get_positive_int, default=30, help="interval in seconds for daemon mode(default: 30s)")
     return parser.parse_args()
 
 
-def get_positive_int(value):
+def get_int_between_0_and_100(value):
     """
     Get the correct number for the threshols for the warning and danger.
     """
@@ -62,6 +63,19 @@ def get_positive_int(value):
         raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
     return value
 
+
+def get_positive_int(value):
+    """
+    Get the correct number for the thresholds for interval in the daemon mode
+    """
+    try:
+        value = int(value)
+    except (TypeError, ValueError):
+        raise argparse.ArgumentTypeError("The interval must be a positive integer")
+    if not value > 0:
+        raise argparse.ArgumentTypeError("The interval must be a positive integer")
+    return value
+    
 
 def save_thresholds(warning, danger):
     """
