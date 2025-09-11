@@ -15,7 +15,7 @@ import psutil
 
 CONFIG_FILE = "config.json"
 # region Main
-# Main Funtion
+# Main Function
 def main():
     """
     The main loop of the program.
@@ -30,9 +30,8 @@ def main():
 #endregion
 
 
-
-# region Logic
-# Logic Functions
+# region Argument
+# Argument Handling
 def parse_args():
     """
     Get the argument by the command from users.
@@ -50,65 +49,6 @@ def parse_args():
     
     return parser.parse_args()
 
-    
-def collect_system_data():
-    """
-    Collect the system data includs the cpu, each cores of cpu, memory, disk, network.
-    """
-    return{
-        "cpu": get_cpu_usage(),
-        "cpu_cores": get_cpu_usage(per_core=True),
-        "mem": get_memory_usage(),
-        "disk": get_disk_usage(),
-        "net": get_net_speed()
-    }
-
-
-def print_select_data(args, data):
-    """
-    Print the data that use asks.
-    """
-    if not(args.cpu or args.mem or args.disk or args.net):
-        print_all_usage_percentage(data["cpu"], data["mem"], data["disk"], data["net"])
-    else:
-        if args.cpu:
-            print_cpu_usage(data["cpu"], data["cpu_cores"])
-        if args.mem:
-            print_memory_usage(data["mem"])
-        if args.disk:
-            print_disk_usage(data["disk"])
-        if args.net:
-            print_net_speed(data["net"])
-
-
-def collect_args_and_print(args, warning, danger):
-    """
-    collect the data that user asks and print them out.
-    It also checks if there are anything that needs to warn the user
-    """
-    data = collect_system_data()
-    print_select_data(args, data)
-    check_and_warning(data, warning, danger)
-
-
-def run_daemon_mode(args, warning, danger, interval=30):
-    """
-    run the daemon mode, if the function doesn't get a interval.
-    The interval will be 30 seconds by default.
-    """
-    print("Daemon mode enabled")
-    time.sleep(1)
-    print(f"Collecting system information every {interval} seconds.")
-    time.sleep(1)
-    print("Press Ctrl + C to exit\n")
-    try:
-        while True:
-            collect_args_and_print(args, warning, danger)
-            time.sleep(interval)
-    except KeyboardInterrupt:
-        print("\n\nDaemon mode exited.")
-        print("Thank you for using System Monitor. Goodbye!")
-
 
 def get_positive_int(value):
     """
@@ -118,12 +58,30 @@ def get_positive_int(value):
         value = int(value)
     except (TypeError, ValueError):
         raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
-    if value < 0:
-        raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
-    if value > 100:
+    if not 0 < value < 100:
         raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
     return value
-#endregions
+
+
+def save_thresholds(warning, danger):
+    """
+    Write the threshold into the Json file.
+    """
+    data = {"warning": warning, "danger": danger}
+    with open(CONFIG_FILE, "w") as file:
+        json.dump(data, file, indent=4)
+
+
+def load_thresholds():
+    """
+    Get the threshold from the file.
+    """
+    try:
+        with open(CONFIG_FILE, "r") as file:
+            return json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError, OSError):
+        return {"warning": 70, "danger": 90}
+#endregion
 
 
 
@@ -138,7 +96,7 @@ def get_cpu_usage(per_core=False):
 
 def get_memory_usage():
     """
-    Get the percentage of the usage of each cores of CPU.
+    Get the percentage of the memory usage.
     """
     return psutil.virtual_memory()
 
@@ -242,7 +200,6 @@ def print_net_speed(net):
 
 # region Alerts
 # Danger / Warning Alerts
-
 def get_alerts(data, warning, danger):
     """
     Return a dictionary of the things that shuold warn the user.
@@ -280,10 +237,10 @@ def print_alerts(alerts):
     Print the alerts.
     """
     for level, msg in alerts:
-        add_colour_to_alerts(level, msg)
+        add_color_to_alerts(level, msg)
 
 
-def add_colour_to_alerts(level, msg):
+def add_color_to_alerts(level, msg):
     """
     Add colour to the alerts.
     """
@@ -291,28 +248,72 @@ def add_colour_to_alerts(level, msg):
     RESET = "\033[0m"
     prefixes = {"warning": "[WARNING]", "danger": "[DANGER]"}
     print(f"{colors[level]}{prefixes[level]} {msg}{RESET}")  
-
-
-def save_thresholds(warning, danger):
-    """
-    Write the threshold into the Json file.
-    """
-    data = {"warning": warning, "danger": danger}
-    with open(CONFIG_FILE, "w") as file:
-        json.dump(data, file, indent=4)
-
-
-def load_thresholds():
-    """
-    Get the threshold from the file.
-    """
-    try:
-        with open(CONFIG_FILE, "r") as file:
-            return json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError, OSError):
-        return {"warning": 70, "danger": 90}
-    
 # endriegion
+
+
+
+# region Logic
+# Logic Functions
+
+    
+def collect_system_data():
+    """
+    Collect the system data includs the cpu, each cores of cpu, memory, disk, network.
+    """
+    return{
+        "cpu": get_cpu_usage(),
+        "cpu_cores": get_cpu_usage(per_core=True),
+        "mem": get_memory_usage(),
+        "disk": get_disk_usage(),
+        "net": get_net_speed()
+    }
+
+
+def print_select_data(args, data):
+    """
+    Print the data that use asks.
+    """
+    if not(args.cpu or args.mem or args.disk or args.net):
+        print_all_usage_percentage(data["cpu"], data["mem"], data["disk"], data["net"])
+    else:
+        if args.cpu:
+            print_cpu_usage(data["cpu"], data["cpu_cores"])
+        if args.mem:
+            print_memory_usage(data["mem"])
+        if args.disk:
+            print_disk_usage(data["disk"])
+        if args.net:
+            print_net_speed(data["net"])
+
+
+def collect_args_and_print(args, warning, danger):
+    """
+    collect the data that user asks and print them out.
+    It also checks if there are anything that needs to warn the user
+    """
+    data = collect_system_data()
+    print_select_data(args, data)
+    check_and_warning(data, warning, danger)
+
+
+def run_daemon_mode(args, warning, danger, interval=30):
+    """
+    run the daemon mode, if the function doesn't get a interval.
+    The interval will be 30 seconds by default.
+    """
+    print("Daemon mode enabled")
+    time.sleep(1)
+    print(f"Collecting system information every {interval} seconds.")
+    time.sleep(1)
+    print("Press Ctrl + C to exit\n")
+    try:
+        while True:
+            collect_args_and_print(args, warning, danger)
+            time.sleep(interval)
+    except KeyboardInterrupt:
+        print("\n\nDaemon mode exited.")
+        print("Thank you for using System Monitor. Goodbye!")
+#endregions
 
     
 
