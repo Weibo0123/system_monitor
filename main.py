@@ -2,9 +2,9 @@
 System Monitor
 
 Description:
-    This code help you to monitor your system, it could work on Linux, Windows and Mac.
-    It can help you check CPU, , Memory, Disk and Network
-    It support deamon mode
+    This code helps you to monitor your system, it could work on Linux, Windows and Mac.
+    It can help you check CPU, Memory, Disk and Network
+    It support daemon mode
     There is also warning and danger alerts
 """
 
@@ -53,7 +53,7 @@ def parse_args():
 
 def get_int_between_0_and_100(value):
     """
-    Get the correct number for the threshols for the warning and danger.
+    Get the correct number for the thresholds for the warning and danger.
     """
     try:
         value = int(value)
@@ -136,7 +136,7 @@ def get_net_speed(interval=1):
     packets_recv = (new_value.packets_recv - old_value.packets_recv) / interval
 
     return [bytes_sent, bytes_recv, packets_sent, packets_recv]
-# endregion
+#endregion
 
 
 
@@ -216,7 +216,7 @@ def print_net_speed(net):
 # Danger / Warning Alerts
 def get_alerts(data, warning, danger):
     """
-    Return a dictionary of the things that shuold warn the user.
+    Return a dictionary of the things that should warn the user.
     """
     alerts = []
 
@@ -256,7 +256,7 @@ def print_alerts(alerts):
 
 def add_color_to_alerts(level, msg):
     """
-    Add colour to the alerts.
+    Add color to the alerts.
     """
     colors = {"warning": "\033[93m", "danger": "\033[91m"}
     RESET = "\033[0m"
@@ -272,7 +272,7 @@ def add_color_to_alerts(level, msg):
     
 def collect_system_data():
     """
-    Collect the system data includs the cpu, each cores of cpu, memory, disk, network.
+    Collect the system data includes the cpu, each cores of cpu, memory, disk, network.
     """
     return{
         "cpu": get_cpu_usage(),
@@ -285,7 +285,7 @@ def collect_system_data():
 
 def print_select_data(args, data):
     """
-    Print the data that use asks.
+    Print the data that user asks.
     """
     if not(args.cpu or args.mem or args.disk or args.net):
         print_all_usage_percentage(data["cpu"], data["mem"], data["disk"], data["net"])
@@ -312,7 +312,7 @@ def collect_args_and_print(args, warning, danger):
 
 def run_daemon_mode(args, warning, danger, interval=30):
     """
-    run the daemon mode, if the function doesn't get a interval.
+    run the daemon mode, if the function doesn't get an interval.
     The interval will be 30 seconds by default.
     """
     print("Daemon mode enabled")
@@ -327,7 +327,7 @@ def run_daemon_mode(args, warning, danger, interval=30):
     except KeyboardInterrupt:
         print("\n\nDaemon mode exited.")
         print("Thank you for using System Monitor. Goodbye!")
-#endregions
+#endregion
 
     
 
