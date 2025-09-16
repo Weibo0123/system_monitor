@@ -59,7 +59,7 @@ def get_int_between_0_and_100(value):
         value = int(value)
     except (TypeError, ValueError):
         raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
-    if not 0 < value < 100:
+    if not 0 < value <= 100:
         raise argparse.ArgumentTypeError("The threshold must be a positive integer between 0 to 100")
     return value
 

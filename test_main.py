@@ -1,20 +1,21 @@
 import pytest
 import json
-from main import get_positive_int, get_alerts, load_thresholds, save_thresholds
+from main import get_int_between_0_and_100, get_alerts, load_thresholds, save_thresholds
 import argparse
 
-def test_get_positive_int():
-    assert get_positive_int(10) == 10
-    assert get_positive_int(0) == 0
-    assert get_positive_int(100) == 100
-    assert get_positive_int("80") == 80
-    assert get_positive_int("75") == 75
+def test_get_int_between_0_and_100():
+    assert get_int_between_0_and_100(10) == 10
+    assert get_int_between_0_and_100(100) == 100
+    assert get_int_between_0_and_100("80") == 80
+    assert get_int_between_0_and_100("75") == 75
     with pytest.raises(argparse.ArgumentTypeError):
-        get_positive_int("-5")
+        get_int_between_0_and_100("0")
     with pytest.raises(argparse.ArgumentTypeError):
-        get_positive_int("120")
+        get_int_between_0_and_100("-5")
     with pytest.raises(argparse.ArgumentTypeError):
-        get_positive_int("cat")
+        get_int_between_0_and_100("120")
+    with pytest.raises(argparse.ArgumentTypeError):
+        get_int_between_0_and_100("cat")
 
 
 class MockUsage:
