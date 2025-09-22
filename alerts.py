@@ -1,4 +1,7 @@
 #alerts.py
+"""
+This is the file that check the warning and danger thresholds and print alerts.
+"""
 def check_and_warn(data, warning, danger):
     """
     Get the alerts and print them.

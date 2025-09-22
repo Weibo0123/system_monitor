@@ -1,4 +1,10 @@
 #collection.py
+"""
+This is the file that collect the system data.
+Every function (besides collect_system_data) collect the data from one part of computer.
+All the functions will be called by collect_system_data.
+Only the collect_system_data will be called in the main function.
+"""
 import time
 import psutil
 
