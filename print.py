@@ -1,5 +1,4 @@
 #print.py
-
 def print_all_usage_percentage(cpu, mem, disk, net):
     """
     Print percentage of all the parts the function check.

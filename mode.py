@@ -1,7 +1,13 @@
 #daemon.py
-from logic import collect_args_and_print
+from logic import collect_system_data, print_select_data, check_and_warning
 import time
 
+def run_default_mode(args, warning, danger):
+    data = collect_system_data()
+    print_select_data(args, data)
+    check_and_warning(data, warning, danger)
+
+    
 def run_daemon_mode(args, warning, danger, interval=30):
     """
     run the daemon mode, if the function doesn't get an interval.
@@ -14,8 +20,11 @@ def run_daemon_mode(args, warning, danger, interval=30):
     print("Press Ctrl + C to exit\n")
     try:
         while True:
-            collect_args_and_print(args, warning, danger)
+            run_default_mode(args, warning, danger)
             time.sleep(interval)
     except KeyboardInterrupt:
         print("\n\nDaemon mode exited.")
         print("Thank you for using System Monitor. Goodbye!")
+
+
+

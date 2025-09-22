@@ -1,7 +1,6 @@
 # main.py
 from argument import parse_args, save_thresholds
-from logic import collect_args_and_print
-from daemon import run_daemon_mode
+from mode import run_default_mode, run_daemon_mode
 
 def main():
     """
@@ -15,8 +14,10 @@ def main():
     if args.daemon:
         run_daemon_mode(args, args.warning, args.danger, args.interval)
     else:
-        collect_args_and_print(args, args.warning, args.danger)
+        run_default_mode(args, args.warning, args.danger)
+
 
 
 if __name__ == "__main__":
     main()
+    
