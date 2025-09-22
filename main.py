@@ -1,8 +1,8 @@
 # main.py
-from argument import argument
-from alerts import alert
-from output import output
-from collection import collection
+from argument import get_argument, save_thresholds
+from alerts import check_and_warn
+from output import print_output
+from collection import collect_system_data
 import time
 import json
 CONFIG_FILE = "config.json"
@@ -11,7 +11,7 @@ def main():
     """
     Entry point of the System Monitor program.
     """
-    args = argument()
+    args = get_argument()
 
     # Save thresholds (to config.json)
     save_thresholds(args.warning, args.danger)
@@ -23,9 +23,9 @@ def main():
 
 
 def run_default_mode(args, warning, danger):
-    data = collection()
-    output(args, data)
-    alert(data, warning, danger)
+    system_data = collect_system_data()
+    print_output(args, system_data)
+    check_and_warn(system_data, warning, danger)
 
     
 def run_daemon_mode(args, warning, danger, interval=30):
@@ -47,13 +47,7 @@ def run_daemon_mode(args, warning, danger, interval=30):
         print("Thank you for using System Monitor. Goodbye!")
 
 
-def save_thresholds(warning, danger):
-    """
-    Write the threshold into the Json file.
-    """
-    data = {"warning": warning, "danger": danger}
-    with open(CONFIG_FILE, "w") as file:
-        json.dump(data, file, indent=4)
+
 
 
 if __name__ == "__main__":

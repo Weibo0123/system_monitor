@@ -1,5 +1,5 @@
 #print.py
-def output(args, data):
+def print_output(args, data):
     """
     Print the data that user asks.
     """

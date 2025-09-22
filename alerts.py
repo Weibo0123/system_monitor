@@ -1,5 +1,5 @@
 #alerts.py
-def alert(data, warning, danger):
+def check_and_warn(data, warning, danger):
     """
     Get the alerts and print them.
     """

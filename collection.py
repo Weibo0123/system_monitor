@@ -2,7 +2,7 @@
 import time
 import psutil
 
-def collection():
+def collect_system_data():
     """
     Collect the system data includes the cpu, each cores of cpu, memory, disk, network.
     """
