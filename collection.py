@@ -2,6 +2,19 @@
 import time
 import psutil
 
+def collection():
+    """
+    Collect the system data includes the cpu, each cores of cpu, memory, disk, network.
+    """
+    return{
+        "cpu": get_cpu_usage(),
+        "cpu_cores": get_cpu_usage(per_core=True),
+        "mem": get_memory_usage(),
+        "disk": get_disk_usage(),
+        "net": get_net_speed()
+    }
+
+
 def get_cpu_usage(per_core=False):
     """
     Get the percentage of the CPU usage.
@@ -37,3 +50,5 @@ def get_net_speed(interval=1):
     packets_recv = (new_value.packets_recv - old_value.packets_recv) / interval
 
     return [bytes_sent, bytes_recv, packets_sent, packets_recv]
+
+

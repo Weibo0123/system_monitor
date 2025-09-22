@@ -1,4 +1,12 @@
 #alerts.py
+def alert(data, warning, danger):
+    """
+    Get the alerts and print them.
+    """
+    alerts = get_alerts(data, warning, danger)
+    print_alerts(alerts)
+
+
 def get_alerts(data, warning, danger):
     """
     Return a dictionary of the things that should warn the user.
@@ -21,14 +29,6 @@ def get_alerts(data, warning, danger):
         alerts.append(("warning", f"High Disk Usage Detected: {data['disk'].percent}%"))
 
     return alerts
-
-
-def check_and_warning(data, warning, danger):
-    """
-    Get the alerts and print them.
-    """
-    alerts = get_alerts(data, warning, danger)
-    print_alerts(alerts)
 
 
 def print_alerts(alerts):

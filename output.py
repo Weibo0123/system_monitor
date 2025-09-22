@@ -1,4 +1,21 @@
 #print.py
+def output(args, data):
+    """
+    Print the data that user asks.
+    """
+    if not(args.cpu or args.mem or args.disk or args.net):
+        print_all_usage_percentage(data["cpu"], data["mem"], data["disk"], data["net"])
+    else:
+        if args.cpu:
+            print_cpu_usage(data["cpu"], data["cpu_cores"])
+        if args.mem:
+            print_memory_usage(data["mem"])
+        if args.disk:
+            print_disk_usage(data["disk"])
+        if args.net:
+            print_net_speed(data["net"])
+
+
 def print_all_usage_percentage(cpu, mem, disk, net):
     """
     Print percentage of all the parts the function check.
@@ -7,6 +24,7 @@ def print_all_usage_percentage(cpu, mem, disk, net):
     print(f"Memory Usage: {mem.percent}%")
     print(f"Disk Usage: {disk.percent}%")
     print(f"Download Speed: {net[1] / 1024:.2f} KB\n")
+
 
 def print_section(title, data):
     """
@@ -65,3 +83,4 @@ def print_net_speed(net):
         "Packets Upload": f"{int(net[2])} Packets/s",
         "Packets Download": f"{int(net[3])} Packets/s"
     })
+

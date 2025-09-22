@@ -1,10 +1,9 @@
 #argument.py
 import json
 import argparse
-
 CONFIG_FILE = "config.json"
 
-def parse_args():
+def argument():
     """
     Get the argument by the command from users.
     """
@@ -48,13 +47,7 @@ def get_positive_int(value):
     return value
     
 
-def save_thresholds(warning, danger):
-    """
-    Write the threshold into the Json file.
-    """
-    data = {"warning": warning, "danger": danger}
-    with open(CONFIG_FILE, "w") as file:
-        json.dump(data, file, indent=4)
+
 
 
 def load_thresholds():
