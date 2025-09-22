@@ -1,4 +1,10 @@
 #print.py
+"""
+This is the file that print the output.
+Every function (besides print_output) print the output what the user wants.
+All the functions will be called by print_output.
+Only the print_output will be called outside this file.
+"""
 def print_output(args, data):
     """
     Print the data that user asks.

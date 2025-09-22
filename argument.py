@@ -1,4 +1,8 @@
 #argument.py
+"""
+This is the file that getting the comment-line arguments and manage the configuration.
+Only the get_argument and save_thresholds will becalled outside the file
+"""
 import json
 import argparse
 CONFIG_FILE = "config.json"

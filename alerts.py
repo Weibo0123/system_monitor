@@ -1,6 +1,7 @@
 #alerts.py
 """
 This is the file that check the warning and danger thresholds and print alerts.
+Only the check_and_warn will be called outside this file.
 """
 def check_and_warn(data, warning, danger):
     """
