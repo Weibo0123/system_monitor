@@ -9,7 +9,8 @@ CONFIG_FILE = "config.json"
 
 def get_argument():
     """
-    Get the argument by the command from users.
+    Get the argument by the command-line from users.
+    This function will be called in main.
     """
     default_thresholds = load_thresholds()
 
@@ -27,7 +28,7 @@ def get_argument():
 
 def get_int_between_0_and_100(value):
     """
-    Get the correct number for the thresholds for the warning and danger.
+    Get the correct number for the warning and danger thresholds.
     """
     try:
         value = int(value)
@@ -54,6 +55,7 @@ def get_positive_int(value):
 def save_thresholds(warning, danger):
     """
     Write the threshold into the Json file.
+    This file will be called in main.
     """
     data = {"warning": warning, "danger": danger}
     with open(CONFIG_FILE, "w") as file:
@@ -63,6 +65,7 @@ def save_thresholds(warning, danger):
 def load_thresholds():
     """
     Get the threshold from the file.
+    If there's anything wrong happen to the json file, it will return the default thresholds.
     """
     try:
         with open(CONFIG_FILE, "r") as file:

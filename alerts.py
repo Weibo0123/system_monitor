@@ -5,7 +5,8 @@ Only the check_and_warn will be called outside this file.
 """
 def check_and_warn(data, warning, danger):
     """
-    Get the alerts and print them.
+    Get the alerts and print them by calling get_alerts and print_alerts.
+    This is function will be called in main.
     """
     alerts = get_alerts(data, warning, danger)
     print_alerts(alerts)
@@ -13,6 +14,7 @@ def check_and_warn(data, warning, danger):
 
 def get_alerts(data, warning, danger):
     """
+    Check the system data and the thresholds.
     Return a dictionary of the things that should warn the user.
     """
     alerts = []
@@ -37,7 +39,8 @@ def get_alerts(data, warning, danger):
 
 def print_alerts(alerts):
     """
-    Print the alerts.
+    GEt the alerts that should print from the check_and_warn.
+    Call the add_color_to_alerts to add colors to that warning message
     """
     for level, msg in alerts:
         add_color_to_alerts(level, msg)

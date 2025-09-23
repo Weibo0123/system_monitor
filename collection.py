@@ -10,7 +10,8 @@ import psutil
 
 def collect_system_data():
     """
-    Collect the system data includes the cpu, each cores of cpu, memory, disk, network.
+    Collect the system data by calling other functions in this file.
+    This function will be called in main.
     """
     return{
         "cpu": get_cpu_usage(),

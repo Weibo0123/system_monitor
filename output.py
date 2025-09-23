@@ -1,4 +1,4 @@
-#print.py
+#output.py
 """
 This is the file that print the output.
 Every function (besides print_output) print the output what the user wants.
@@ -7,7 +7,8 @@ Only the print_output will be called outside this file.
 """
 def print_output(args, data):
     """
-    Print the data that user asks.
+    Print the data that user asks by calling other functions.
+    This function will be callled in main.
     """
     if not(args.cpu or args.mem or args.disk or args.net):
         print_all_usage_percentage(data["cpu"], data["mem"], data["disk"], data["net"])
