@@ -39,18 +39,12 @@ def get_alerts(data, warning, danger):
 
 def print_alerts(alerts):
     """
-    GEt the alerts that should print from the check_and_warn.
-    Call the add_color_to_alerts to add colors to that warning message
-    """
-    for level, msg in alerts:
-        add_color_to_alerts(level, msg)
-
-
-def add_color_to_alerts(level, msg):
-    """
-    Add color to the alerts.
+    Print the alerts that should show users in color.
     """
     colors = {"warning": "\033[93m", "danger": "\033[91m"}
     RESET = "\033[0m"
     prefixes = {"warning": "[WARNING]", "danger": "[DANGER]"}
-    print(f"{colors[level]}{prefixes[level]} {msg}{RESET}")  
+    for level, msg in alerts:
+        print(f"{colors[level]}{prefixes[level]} {msg}{RESET}")  
+
+    

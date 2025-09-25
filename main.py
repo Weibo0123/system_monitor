@@ -1,21 +1,22 @@
+
+"""
+Entry point of the System Monitor program.
+Parses commend line arguments and saves thresholds.
+And then run the mode based on user inputs.
+"""
 # main.py
 from argument import get_argument, save_thresholds
 from alerts import check_and_warn
 from output import print_output
 from collection import collect_system_data
 import time
-CONFIG_FILE = "config.json"
 
 def main():
-    """
-    Entry point of the System Monitor program.
-    Parses commend line arguments and saves thresholds.
-    And then run the mode based on user inputs.
-    """
-    args = get_argument()
+ #Asks user for their run options and then populates a list of arguments from the system monitor.
+    args = get_argument() #From argument.py
 
-    # Save thresholds (to config.json)
-    save_thresholds(args.warning, args.danger)
+    # Save thresholds (to config.json) for the alerts.
+    save_thresholds(args.warning, args.danger) #From argument.py
 
     if args.daemon:
         run_daemon_mode(args, args.warning, args.danger, args.interval)
@@ -27,9 +28,9 @@ def run_default_mode(args, warning, danger):
     """
     Collect system data once, print output, and chekc for alerts.
     """
-    system_data = collect_system_data()
-    print_output(args, system_data)
-    check_and_warn(system_data, warning, danger)
+    system_data = collect_system_data() #From collection.py
+    print_output(args, system_data) #From output.py
+    check_and_warn(system_data, warning, danger) #From alerts.py
 
     
 def run_daemon_mode(args, warning, danger, interval=30):
