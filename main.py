@@ -1,4 +1,3 @@
-
 """
 Entry point of the System Monitor program.
 Parses commend line arguments and saves thresholds.
@@ -9,6 +8,7 @@ from argument import get_argument, save_thresholds
 from alerts import check_and_warn
 from output import print_output
 from collection import collect_system_data
+from log import log_system_data
 import time
 
 def main():
@@ -31,6 +31,7 @@ def run_default_mode(args, warning, danger):
     system_data = collect_system_data() #From collection.py
     print_output(args, system_data) #From output.py
     check_and_warn(system_data, warning, danger) #From alerts.py
+    log_system_data(system_data)
 
     
 def run_daemon_mode(args, warning, danger, interval=30):

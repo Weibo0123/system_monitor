@@ -2,3 +2,4 @@ __pyache__/
 *.pyc 
 
 config.json
+system_log.csv
