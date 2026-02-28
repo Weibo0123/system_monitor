@@ -3,6 +3,8 @@ Entry point of the System Monitor program.
 Parses commend line arguments and save thresholds.
 And then run the mode based on user inputs.
 """
+from time import sleep
+
 # main.py
 from argument import get_argument, save_thresholds
 from alerts import check_and_warn
@@ -12,7 +14,7 @@ from log import log_system_data
 import time
 
 def main():
- #Asks user for their run options and then populates a list of arguments from the system monitor.
+    #Asks user for their run options and then populates a list of arguments from the system monitor.
     args = get_argument() #From argument.py
 
     # Save thresholds (to config.json) for the alerts.
@@ -44,10 +46,16 @@ def run_daemon_mode(args, warning, danger, interval=30):
     print(f"Collecting system information every {interval} seconds.")
     time.sleep(1)
     print("Press Ctrl + C to exit\n")
+    next_run = time.time()
     try:
         while True:
             run_default_mode(args, warning, danger)
-            time.sleep(interval)
+            next_run += interval
+            sleep_time = next_run - time.time()
+            if sleep_time > 0:
+                time.sleep(sleep_time)
+            else:
+                next_run = time.time()
     except KeyboardInterrupt:
         print("\n\nDaemon mode exited.")
         print("Thank you for using System Monitor. Goodbye!")
