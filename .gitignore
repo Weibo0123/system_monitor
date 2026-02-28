@@ -1,5 +1,6 @@
 __pyache__/
 *.pyc 
+.idea
 
 config.json
 system_log.csv

@@ -1,6 +1,6 @@
 """
 Entry point of the System Monitor program.
-Parses commend line arguments and saves thresholds.
+Parses commend line arguments and save thresholds.
 And then run the mode based on user inputs.
 """
 # main.py
@@ -26,7 +26,7 @@ def main():
 
 def run_default_mode(args, warning, danger):
     """
-    Collect system data once, print output, and chekc for alerts.
+    Collect system data at once, print output, and check for alerts.
     """
     system_data = collect_system_data() #From collection.py
     print_output(args, system_data) #From output.py
@@ -36,8 +36,8 @@ def run_default_mode(args, warning, danger):
     
 def run_daemon_mode(args, warning, danger, interval=30):
     """
-    Run the system monitor repeatly at a fixed interval (default 30 seconds).
-    Allows user to stop with Ctrl + C.
+    Run the system monitor repeatedly at a fixed interval (default 30 seconds).
+    Allows the user to stop with Ctrl + C.
     """
     print("Daemon mode enabled")
     time.sleep(1)

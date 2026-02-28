@@ -1,12 +1,13 @@
 #alerts.py
 """
-This is the file that check the warning and danger thresholds and print alerts.
+This is the file that checks the warning and danger thresholds and print alerts.
 Only the check_and_warn will be called outside this file.
 """
+
 def check_and_warn(data, warning, danger):
     """
     Get the alerts and print them by calling get_alerts and print_alerts.
-    This is function will be called in main.
+    This is function will be called in the main.
     """
     alerts = get_alerts(data, warning, danger)
     print_alerts(alerts)

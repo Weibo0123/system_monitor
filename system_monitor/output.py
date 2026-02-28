@@ -1,14 +1,15 @@
 #output.py
 """
-This is the file that print the output.
-Every function (besides print_output) print the output what the user wants.
-All the functions will be called by print_output.
+This is the file that prints the output.
+Every function (besides print_output) prints the output what the user wants.
+Print_output will call all the functions.
 Only the print_output will be called outside this file.
 """
+
 def print_output(args, data):
     """
-    Print the data that user asks by calling other functions.
-    This function will be callled in main.
+    Print the data that the user asks by calling other functions.
+    This function will be called in the main.
     """
     if not(args.cpu or args.mem or args.disk or args.net):
         print_all_usage_percentage(data["cpu"], data["mem"], data["disk"], data["net"])
@@ -25,7 +26,7 @@ def print_output(args, data):
 
 def print_all_usage_percentage(cpu, mem, disk, net):
     """
-    Print percentage of all the parts the function check.
+    Print percentage of all the parts the function checks.
     """
     print(f"CPU Usage: {cpu}%" )
     print(f"Memory Usage: {mem.percent}%")

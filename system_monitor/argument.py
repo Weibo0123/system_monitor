@@ -1,7 +1,7 @@
 #argument.py
 """
 This is the file that getting the comment-line arguments and manage the configuration.
-Only the get_argument and save_thresholds will becalled outside the file
+Only the get_argument and save_thresholds will be called outside the file
 """
 import json
 import argparse
@@ -10,7 +10,7 @@ CONFIG_FILE = "config.json"
 def get_argument():
     """
     Get the argument by the command-line from users.
-    This function will be called in main.
+    This function will be called in the main.
     """
     default_thresholds = load_thresholds()
 
@@ -41,7 +41,7 @@ def get_int_between_0_and_100(value):
 
 def get_positive_int(value):
     """
-    Get the correct number for the thresholds for interval in the daemon mode
+    Get the correct number for the thresholds for an interval in the daemon mode
     """
     try:
         value = int(value)
@@ -54,8 +54,8 @@ def get_positive_int(value):
 
 def save_thresholds(warning, danger):
     """
-    Write the threshold into the Json file.
-    This file will be called in main.
+    Write the threshold into the JSON file.
+    This file will be called in the main.
     """
     data = {"warning": warning, "danger": danger}
     with open(CONFIG_FILE, "w") as file:
@@ -65,7 +65,7 @@ def save_thresholds(warning, danger):
 def load_thresholds():
     """
     Get the threshold from the file.
-    If there's anything wrong happen to the json file, it will return the default thresholds.
+    If there's anything wrong happening to the JSON file, it will return the default thresholds.
     """
     try:
         with open(CONFIG_FILE, "r") as file:

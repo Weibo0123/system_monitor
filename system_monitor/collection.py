@@ -1,7 +1,7 @@
 #collection.py
 """
-This is the file that collect the system data.
-Every function (besides collect_system_data) collect the data from one part of computer.
+This is the file that collects the system data.
+Every function (besides collect_system_data) collects the data from one part of the computer.
 All the functions will be called by collect_system_data.
 Only the collect_system_data will be called outside this file.
 """
@@ -11,7 +11,7 @@ import psutil
 def collect_system_data():
     """
     Collect the system data by calling other functions in this file.
-    This function will be called in main.
+    This function will be called in the main.
     """
     return{
         "cpu": get_cpu_usage(),
