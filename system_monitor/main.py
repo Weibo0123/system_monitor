@@ -30,6 +30,7 @@ def run_default_mode(args, warning, danger):
     """
     Collect system data at once, print output, and check for alerts.
     """
+
     system_data = collect_system_data() #From collection.py
     print_output(args, system_data) #From output.py
     check_and_warn(system_data, warning, danger) #From alerts.py
