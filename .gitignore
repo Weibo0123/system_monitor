@@ -1,6 +1,7 @@
 __pyache__/
 *.pyc 
 .idea
-
+logs
+config
 config.json
 system_log.csv
