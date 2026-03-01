@@ -14,9 +14,9 @@ def log_system_data(data):
     exists = os.path.exists(LOG_FILE)
 
     cpu = data.get("cpu")
-    memory = getattr(data.get("memory"), "percent", None)
+    memory = getattr(data.get("mem"), "percent", None)
     disk = getattr(data.get("disk"), "percent", None)
-    net_speed = data.get("net_speed") or [None, None, None, None]
+    net_speed = data.get("net") or [None, None, None, None]
 
     with open(LOG_FILE, "a",  newline="", encoding="utf-8-sig") as f:
         writer = csv.writer(f)

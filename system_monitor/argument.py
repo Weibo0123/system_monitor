@@ -5,7 +5,11 @@ Only the get_argument and save_thresholds will be called outside the file
 """
 import json
 import argparse
-CONFIG_FILE = "config.json"
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LOG_DIR = os.path.join(BASE_DIR, "config")
+CONFIG_FILE = os.path.join(LOG_DIR, "config.json")
 
 def get_argument():
     """
@@ -57,6 +61,8 @@ def save_thresholds(warning, danger):
     Write the threshold into the JSON file.
     This file will be called in the main.
     """
+    if not os.path.exists(LOG_DIR):
+        os.makedirs(LOG_DIR)
     data = {"warning": warning, "danger": danger}
     with open(CONFIG_FILE, "w") as file:
         json.dump(data, file, indent=4)
