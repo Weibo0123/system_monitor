@@ -29,3 +29,11 @@ def validate_range(df: pd.DataFrame) -> pd.DataFrame:
     )
     return df[range]
 
+def add_features(df: pd.DataFrame) -> pd.DataFrame:
+    df = df.copy()
+    df["net_total"] = df["net_up"] + df["net_down"]
+    df = df.set_index("timestamp")
+    df["cpu_roll_mean_5"] = df["cpu"].rolling(window=5, min_periods=1).mean()
+    df["net_roll_mean_5"] = df["net_total"].rolling(window=5, min_periods=1).mean()
+    return df
+
